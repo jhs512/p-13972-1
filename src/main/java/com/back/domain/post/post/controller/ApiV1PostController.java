@@ -78,9 +78,12 @@ public class ApiV1PostController {
     @Operation(summary = "작성")
     public RsData<PostDto> write(
             @Valid @RequestBody PostWriteReqBody reqBody,
-            @NotBlank @Size(min = 2, max = 30) String username
+            @NotBlank @Size(min = 2, max = 30) String username,
+            @NotBlank @Size(min = 2, max = 30) String password
     ) {
         Member actor = memberService.findByUsername(username).get();
+        if ( !actor.getPassword().equals(password) ) throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+
         Post post = postService.write(actor, reqBody.title, reqBody.content);
 
         return new RsData<>(
