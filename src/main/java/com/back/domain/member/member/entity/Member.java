@@ -18,4 +18,8 @@ public class Member extends BaseEntity {
         this.password = password;
         this.nickname = nickname;
     }
+
+    public String getName() {
+        return nickname;
+    }
 }
