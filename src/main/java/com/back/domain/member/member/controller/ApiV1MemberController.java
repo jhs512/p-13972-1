@@ -4,7 +4,6 @@ package com.back.domain.member.member.controller;
 import com.back.domain.member.member.dto.MemberDto;
 import com.back.domain.member.member.entity.Member;
 import com.back.domain.member.member.service.MemberService;
-import com.back.global.exception.ServiceException;
 import com.back.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -41,11 +40,6 @@ public class ApiV1MemberController {
     public RsData<MemberDto> join(
             @Valid @RequestBody MemberJoinReqBody reqBody
     ) {
-        memberService.findByUsername(reqBody.username)
-                .ifPresent(_member -> {
-                    throw new ServiceException("409-1", "이미 존재하는 아이디입니다.");
-                });
-
         Member member = memberService.join(
                 reqBody.username(),
                 reqBody.password(),
