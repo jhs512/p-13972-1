@@ -34,7 +34,7 @@ public class ApiV1MemberControllerTest {
     void t1() throws Exception {
         ResultActions resultActions = mvc
                 .perform(
-                        post("/api/v1/members/join")
+                        post("/api/v1/members")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
