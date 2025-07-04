@@ -79,11 +79,9 @@ public class ApiV1PostController {
     @Operation(summary = "작성")
     public RsData<PostDto> write(
             @Valid @RequestBody PostWriteReqBody reqBody,
-            @NotBlank @Size(min = 2, max = 30) String username,
-            @NotBlank @Size(min = 2, max = 30) String password
+            @NotBlank @Size(min = 30, max = 50) String apiKey
     ) {
-        Member actor = memberService.findByUsername(username).orElseThrow(() -> new ServiceException("401-1", "존재하지 않는 회원입니다."));
-        if ( !actor.getPassword().equals(password) ) throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
+        Member actor = memberService.findByApiKey(apiKey).orElseThrow(() -> new ServiceException("401-1", "존재하지 않는 apiKey 입니다."));
 
         Post post = postService.write(actor, reqBody.title, reqBody.content);
 
