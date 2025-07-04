@@ -60,4 +60,37 @@ public class ApiV1MemberControllerTest {
                 .andExpect(jsonPath("$.data.modifyDate").value(Matchers.startsWith(member.getModifyDate().toString().substring(0, 20))))
                 .andExpect(jsonPath("$.data.name").value(member.getName()));
     }
+
+    @Test
+    @DisplayName("로그인")
+    void t2() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/members/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "username": "user1",
+                                            "password": "1234"
+                                        }
+                                        """.stripIndent())
+                )
+                .andDo(print());
+
+        Member member = memberService.findByUsername("user1").get();
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1MemberController.class))
+                .andExpect(handler().methodName("login"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%s님 환영합니다.".formatted(member.getNickname())))
+                .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.data.item").exists())
+                .andExpect(jsonPath("$.data.item.id").value(member.getId()))
+                .andExpect(jsonPath("$.data.item.createDate").value(Matchers.startsWith(member.getCreateDate().toString().substring(0, 25))))
+                .andExpect(jsonPath("$.data.item.modifyDate").value(Matchers.startsWith(member.getModifyDate().toString().substring(0, 25))))
+                .andExpect(jsonPath("$.data.item.name").value(member.getName()))
+                .andExpect(jsonPath("$.data.apiKey").value(member.getApiKey()));
+    }
 }
