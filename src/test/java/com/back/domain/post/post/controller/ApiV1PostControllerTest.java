@@ -29,8 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ApiV1PostControllerTest {
     @Autowired
     private MockMvc mvc;
+
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private MemberService memberService;
 
     @Test
     @DisplayName("글 쓰기")
@@ -40,8 +44,9 @@ public class ApiV1PostControllerTest {
 
         ResultActions resultActions = mvc
                 .perform(
-                        post("/api/v1/posts?apiKey=" + actorApiKey)
+                        post("/api/v1/posts")
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + actorApiKey)
                                 .content("""
                                         {
                                             "title": "제목",
@@ -153,11 +158,15 @@ public class ApiV1PostControllerTest {
     @DisplayName("글 수정")
     void t2() throws Exception {
         int id = 1;
+        Post post = postService.findById(id).get();
+        Member actor = post.getAuthor();
+        String actorApiKey = actor.getApiKey();
 
         ResultActions resultActions = mvc
                 .perform(
                         put("/api/v1/posts/" + id)
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + actorApiKey)
                                 .content("""
                                         {
                                             "title": "제목 new",
@@ -270,7 +279,4 @@ public class ApiV1PostControllerTest {
                     .andExpect(jsonPath("$[%d].content".formatted(i)).value(post.getContent()));
         }
     }
-
-    @Autowired
-    private MemberService memberService;
 }
