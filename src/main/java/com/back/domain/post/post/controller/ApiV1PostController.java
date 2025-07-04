@@ -38,6 +38,7 @@ public class ApiV1PostController {
 
         System.out.println("memberService : " + memberService);
         System.out.println("rq : " + rq);
+        System.out.println("rq : " + rq);
 
         return items
                 .stream()
