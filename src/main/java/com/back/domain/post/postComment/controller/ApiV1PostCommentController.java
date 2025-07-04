@@ -1,7 +1,6 @@
 package com.back.domain.post.postComment.controller;
 
 import com.back.domain.member.member.entity.Member;
-import com.back.domain.member.member.service.MemberService;
 import com.back.domain.post.post.entity.Post;
 import com.back.domain.post.post.service.PostService;
 import com.back.domain.post.postComment.dto.PostCommentDto;
@@ -26,7 +25,6 @@ import java.util.List;
 @Tag(name = "ApiV1PostCommentController", description = "API 댓글 컨트롤러")
 public class ApiV1PostCommentController {
     private final PostService postService;
-    private final MemberService memberService;
     private final Rq rq;
 
     @GetMapping

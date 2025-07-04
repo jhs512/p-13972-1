@@ -6,10 +6,8 @@ import com.back.global.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component
-@RequestScope
 @RequiredArgsConstructor
 public class Rq {
     private final MemberService memberService;

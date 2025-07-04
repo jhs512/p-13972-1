@@ -1,7 +1,6 @@
 package com.back.domain.post.post.controller;
 
 import com.back.domain.member.member.entity.Member;
-import com.back.domain.member.member.service.MemberService;
 import com.back.domain.post.post.dto.PostDto;
 import com.back.domain.post.post.entity.Post;
 import com.back.domain.post.post.service.PostService;
@@ -25,7 +24,6 @@ import java.util.List;
 @Tag(name = "ApiV1PostController", description = "API 글 컨트롤러")
 public class ApiV1PostController {
     private final PostService postService;
-    private final MemberService memberService;
     private final Rq rq;
 
     @GetMapping
@@ -33,10 +31,6 @@ public class ApiV1PostController {
     @Operation(summary = "다건 조회")
     public List<PostDto> getItems() {
         List<Post> items = postService.findAll();
-
-        System.out.println("memberService : " + memberService);
-        System.out.println("rq : " + rq);
-        System.out.println("rq : " + rq);
 
         return items
                 .stream()
