@@ -61,11 +61,18 @@ public class ApiV1PostCommentController {
     @Operation(summary = "삭제")
     public RsData<Void> delete(
             @PathVariable int postId,
-            @PathVariable int id
+            @PathVariable int id,
+            @NotBlank @Size(min = 30, max = 50) @RequestHeader("Authorization") String authorization
     ) {
+        String apiKey = authorization.replace("Bearer ", "");
+        Member actor = memberService.findByApiKey(apiKey).orElseThrow(() -> new ServiceException("401-1", "존재하지 않는 apiKey 입니다."));
+
         Post post = postService.findById(postId).get();
 
         PostComment postComment = post.findCommentById(id).get();
+
+        if (!actor.equals(postComment.getAuthor()))
+            throw new ServiceException("403-1", "댓글 삭제 권한이 없습니다.");
 
         postService.deleteComment(post, postComment);
 
@@ -89,11 +96,18 @@ public class ApiV1PostCommentController {
     public RsData<Void> modify(
             @PathVariable int postId,
             @PathVariable int id,
-            @Valid @RequestBody PostCommentModifyReqBody reqBody
+            @Valid @RequestBody PostCommentModifyReqBody reqBody,
+            @NotBlank @Size(min = 30, max = 50) @RequestHeader("Authorization") String authorization
     ) {
+        String apiKey = authorization.replace("Bearer ", "");
+        Member actor = memberService.findByApiKey(apiKey).orElseThrow(() -> new ServiceException("401-1", "존재하지 않는 apiKey 입니다."));
+
         Post post = postService.findById(postId).get();
 
         PostComment postComment = post.findCommentById(id).get();
+
+        if (!actor.equals(postComment.getAuthor()))
+            throw new ServiceException("403-1", "댓글 수정 권한이 없습니다.");
 
         postService.modifyComment(postComment, reqBody.content);
 
