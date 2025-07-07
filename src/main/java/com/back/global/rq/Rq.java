@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -29,18 +30,20 @@ public class Rq {
 
             apiKey = headerAuthorization.substring("Bearer ".length()).trim();
         } else {
-            apiKey = req.getCookies() == null ?
-                    "" :
-                    Arrays.stream(req.getCookies())
-                            .filter(cookie -> "apiKey".equals(cookie.getName()))
-                            .map(Cookie::getValue)
-                            .findFirst()
-                            .orElse("");
+            apiKey = Optional
+                    .ofNullable(req.getCookies())
+                    .flatMap(
+                            cookies ->
+                                    Arrays.stream(cookies)
+                                            .filter(cookie -> cookie.getName().equals("apiKey"))
+                                            .map(Cookie::getValue)
+                                            .findFirst()
+                    )
+                    .orElse("");
         }
 
-        if (apiKey.isBlank()) {
+        if (apiKey.isBlank())
             throw new ServiceException("401-1", "로그인 후 이용해주세요.");
-        }
 
         Member member = memberService
                 .findByApiKey(apiKey)
