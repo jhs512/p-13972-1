@@ -246,6 +246,37 @@ public class ApiV1PostControllerTest {
     }
 
     @Test
+    @DisplayName("글 수정, without permission")
+    void t12() throws Exception {
+        int id = 1;
+
+        Member actor = memberService.findByUsername("user3").get();
+        String actorApiKey = actor.getApiKey();
+
+        ResultActions resultActions = mvc
+                .perform(
+                        put("/api/v1/posts/" + id)
+                                .header("Authorization", "Bearer " + actorApiKey)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "title": "제목 new",
+                                            "content": "내용 new"
+                                        }
+                                        """)
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("modify"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.resultCode").value("403-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 글 수정권한이 없습니다.".formatted(id)));
+    }
+
+
+    @Test
     @DisplayName("글 삭제")
     void t3() throws Exception {
         int id = 1;
