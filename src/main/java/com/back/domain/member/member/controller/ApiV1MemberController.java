@@ -5,16 +5,14 @@ import com.back.domain.member.member.dto.MemberDto;
 import com.back.domain.member.member.entity.Member;
 import com.back.domain.member.member.service.MemberService;
 import com.back.global.exception.ServiceException;
+import com.back.global.rq.Rq;
 import com.back.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/members")
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "ApiV1MemberController", description = "API 회원 컨트롤러")
 public class ApiV1MemberController {
     private final MemberService memberService;
+    private final Rq rq;
 
 
     record MemberJoinReqBody(
@@ -88,6 +87,18 @@ public class ApiV1MemberController {
                         new MemberDto(member),
                         member.getApiKey()
                 )
+        );
+    }
+
+
+    @GetMapping("/me")
+    public RsData<MemberDto> me() {
+        Member actor = rq.getActor();
+
+        return new RsData<>(
+                "200-1",
+                "%s님의 정보입니다.".formatted(actor.getName()),
+                new MemberDto(actor)
         );
     }
 }

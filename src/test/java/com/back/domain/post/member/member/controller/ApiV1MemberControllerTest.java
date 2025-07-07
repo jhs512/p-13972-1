@@ -112,10 +112,10 @@ public class ApiV1MemberControllerTest {
 
         resultActions
                 .andExpect(handler().handlerType(ApiV1MemberController.class))
-                .andExpect(handler().methodName("login"))
+                .andExpect(handler().methodName("me"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value("200-1"))
-                .andExpect(jsonPath("$.msg").value("OK"))
+                .andExpect(jsonPath("$.msg").value("%s님의 정보입니다.".formatted(member.getName())))
                 .andExpect(jsonPath("$.data").exists())
                 .andExpect(jsonPath("$.data.id").value(member.getId()))
                 .andExpect(jsonPath("$.data.createDate").value(Matchers.startsWith(member.getCreateDate().toString().substring(0, 20))))
