@@ -4,7 +4,6 @@ import com.back.domain.member.member.entity.Member;
 import com.back.domain.post.post.dto.PostDto;
 import com.back.domain.post.post.entity.Post;
 import com.back.domain.post.post.service.PostService;
-import com.back.global.exception.ServiceException;
 import com.back.global.rq.Rq;
 import com.back.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,8 +56,7 @@ public class ApiV1PostController {
 
         Post post = postService.findById(id).get();
 
-        if (!actor.equals(post.getAuthor()))
-            throw new ServiceException("403-1", "글 삭제 권한이 없습니다.");
+        post.checkActorCanDelete(actor);
 
         postService.delete(post);
 
@@ -117,8 +115,7 @@ public class ApiV1PostController {
 
         Post post = postService.findById(id).get();
 
-        if (!actor.equals(post.getAuthor()))
-            throw new ServiceException("403-1", "글 수정 권한이 없습니다.");
+        post.checkActorCanModify(actor);
 
         postService.modify(post, reqBody.title, reqBody.content);
 
