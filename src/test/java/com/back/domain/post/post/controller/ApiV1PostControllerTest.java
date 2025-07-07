@@ -189,6 +189,31 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.msg").value("로그인 후 이용해주세요."));
     }
 
+    @Test
+    @DisplayName("글 쓰기, with wrong authorization header")
+    void t11() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer wrong-api-key")
+                                .content("""
+                                        {
+                                            "title": "제목",
+                                            "content": "내용"
+                                        }
+                                        """)
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("write"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.resultCode").value("401-3"))
+                .andExpect(jsonPath("$.msg").value("API 키가 유효하지 않습니다."));
+    }
+
 
     @Test
     @DisplayName("글 수정")
