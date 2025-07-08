@@ -1,6 +1,5 @@
-package com.back.domain.post.member.member.controller;
+package com.back.domain.member.member.controller;
 
-import com.back.domain.member.member.controller.ApiV1MemberController;
 import com.back.domain.member.member.entity.Member;
 import com.back.domain.member.member.service.MemberService;
 import jakarta.servlet.http.Cookie;

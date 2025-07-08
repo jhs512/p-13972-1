@@ -1,8 +1,6 @@
-package com.back.domain.post.member.member.service;
+package com.back.domain.member.member.service;
 
 import com.back.domain.member.member.entity.Member;
-import com.back.domain.member.member.service.AuthTokenService;
-import com.back.domain.member.member.service.MemberService;
 import com.back.standard.util.Ut;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
