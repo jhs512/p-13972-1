@@ -56,4 +56,28 @@ public class ApiV1AdmMemberControllerTest {
                     .andExpect(jsonPath("$[%d].username".formatted(i)).value(member.getUsername()));
         }
     }
+
+    @Test
+    @DisplayName("단건조회")
+    void t2() throws Exception {
+        int id = 1;
+
+        ResultActions resultActions = mvc
+                .perform(
+                        get("/api/v1/adm/members/" + id)
+                )
+                .andDo(print());
+
+        Member member = memberService.findById(id).get();
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1AdmMemberController.class))
+                .andExpect(handler().methodName("getItem"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(member.getId()))
+                .andExpect(jsonPath("$.createDate").value(Matchers.startsWith(member.getCreateDate().toString().substring(0, 20))))
+                .andExpect(jsonPath("$.modifyDate").value(Matchers.startsWith(member.getModifyDate().toString().substring(0, 20))))
+                .andExpect(jsonPath("$.name").value(member.getName()))
+                .andExpect(jsonPath("$.username").value(member.getUsername()));
+    }
 }
