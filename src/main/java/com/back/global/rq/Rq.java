@@ -43,8 +43,10 @@ public class Rq {
             throw new ServiceException("401-1", "로그인 후 이용해주세요.");
 
         Member member = null;
+        boolean isAccessTokenExists = !accessToken.isBlank();
+        boolean isAccessTokenValid = false;
 
-        if (!accessToken.isBlank()) {
+        if (isAccessTokenExists) {
             Map<String, Object> payload = memberService.payload(accessToken);
 
             if (payload != null) {
@@ -52,6 +54,8 @@ public class Rq {
                 String username = (String) payload.get("username");
                 String name = (String) payload.get("name");
                 member = new Member(id, username, name);
+
+                isAccessTokenValid = true;
             }
         }
 
@@ -59,6 +63,13 @@ public class Rq {
             member = memberService
                     .findByApiKey(apiKey)
                     .orElseThrow(() -> new ServiceException("401-3", "API 키가 유효하지 않습니다."));
+        }
+
+        if (isAccessTokenExists && !isAccessTokenValid) {
+            String actorAccessToken = memberService.genAccessToken(member);
+
+            setCookie("accessToken", actorAccessToken);
+            setHeader("Authorization", actorAccessToken);
         }
 
         return member;
@@ -69,6 +80,16 @@ public class Rq {
                 .ofNullable(req.getHeader(name))
                 .filter(headerValue -> !headerValue.isBlank())
                 .orElse(defaultValue);
+    }
+
+    private void setHeader(String name, String value) {
+        if (value == null) value = "";
+
+        if (value.isBlank()) {
+            req.removeAttribute(name);
+        } else {
+            resp.setHeader(name, value);
+        }
     }
 
     private String getCookieValue(String name, String defaultValue) {
