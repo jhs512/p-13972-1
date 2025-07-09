@@ -20,7 +20,7 @@ public class Member extends BaseEntity {
     private String apiKey;
 
     public Member(int id, String username) {
-        this.id = id;
+        setId(id);
         this.username = username;
     }
 
