@@ -4,6 +4,7 @@ import com.back.domain.member.member.entity.Member;
 import com.back.domain.member.member.service.MemberService;
 import com.back.domain.post.post.entity.Post;
 import com.back.domain.post.post.service.PostService;
+import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,6 +72,61 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.authorName").value(post.getAuthor().getNickname()))
                 .andExpect(jsonPath("$.data.title").value("제목"))
                 .andExpect(jsonPath("$.data.content").value("내용"));
+    }
+
+    @Test
+    @DisplayName("글 쓰기, with wrong apiKey, with valid accessToken")
+    void t14() throws Exception {
+        Member actor = memberService.findByUsername("user1").get();
+        String actorAccessToken = memberService.genAccessToken(actor);
+
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts")
+                                .header("Authorization", "Bearer wrong-api-key " + actorAccessToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "title": "제목",
+                                            "content": "내용"
+                                        }
+                                        """)
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("write"))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("글 쓰기, with wrong apiKey cookie, with valid accessToken cookie")
+    void t15() throws Exception {
+        Member actor = memberService.findByUsername("user1").get();
+        String actorAccessToken = memberService.genAccessToken(actor);
+
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts")
+                                .cookie(
+                                        new Cookie("apiKey", "wrong-api-key"),
+                                        new Cookie("accessToken", actorAccessToken)
+                                )
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "title": "제목",
+                                            "content": "내용"
+                                        }
+                                        """)
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("write"))
+                .andExpect(status().isCreated());
     }
 
     @Test
