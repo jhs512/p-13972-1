@@ -55,6 +55,14 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         logger.debug("apiKey : " + apiKey);
         logger.debug("accessToken : " + accessToken);
 
+        boolean isApiKeyExists = !apiKey.isBlank();
+        boolean isAccessTokenExists = !accessToken.isBlank();
+
+        if (!isApiKeyExists && !isAccessTokenExists) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         filterChain.doFilter(request, response);
     }
 }
