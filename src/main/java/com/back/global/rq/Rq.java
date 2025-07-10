@@ -82,7 +82,7 @@ public class Rq {
                 .orElse(defaultValue);
     }
 
-    private void setHeader(String name, String value) {
+    public void setHeader(String name, String value) {
         if (value == null) value = "";
 
         if (value.isBlank()) {
