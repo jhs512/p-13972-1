@@ -17,6 +17,13 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         logger.debug("CustomAuthenticationFilter: Processing request for " + request.getRequestURI());
 
+        if (request.getRequestURI().startsWith("/api/")) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"resultCode\": \"404-1\", \"msg\": \"메롱\"}");
+            return;
+        }
+
         filterChain.doFilter(request, response);
     }
 }
