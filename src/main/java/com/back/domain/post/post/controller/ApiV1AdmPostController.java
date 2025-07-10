@@ -1,9 +1,6 @@
 package com.back.domain.post.post.controller;
 
-import com.back.domain.member.member.entity.Member;
 import com.back.domain.post.post.service.PostService;
-import com.back.global.exception.ServiceException;
-import com.back.global.rq.Rq;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @SecurityRequirement(name = "bearerAuth")
 public class ApiV1AdmPostController {
     private final PostService postService;
-    private final Rq rq;
 
 
     record AdmPostCountResBody(
@@ -29,11 +25,6 @@ public class ApiV1AdmPostController {
 
     @GetMapping("/count")
     public AdmPostCountResBody count() {
-        Member actor = rq.getActor();
-
-        if (!actor.isAdmin())
-            throw new ServiceException("403-1", "권한이 없습니다.");
-
         return new AdmPostCountResBody(
                 postService.count()
         );

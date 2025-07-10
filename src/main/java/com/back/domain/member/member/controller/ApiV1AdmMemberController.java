@@ -4,8 +4,6 @@ package com.back.domain.member.member.controller;
 import com.back.domain.member.member.dto.MemberWithUsernameDto;
 import com.back.domain.member.member.entity.Member;
 import com.back.domain.member.member.service.MemberService;
-import com.back.global.exception.ServiceException;
-import com.back.global.rq.Rq;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,15 +21,9 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 public class ApiV1AdmMemberController {
     private final MemberService memberService;
-    private final Rq rq;
 
     @GetMapping
     public List<MemberWithUsernameDto> getItems() {
-        Member actor = rq.getActor();
-
-        if (!actor.isAdmin())
-            throw new ServiceException("403-1", "권한이 없습니다.");
-
         List<Member> members = memberService.findAll();
 
         return members.stream()
@@ -43,11 +35,6 @@ public class ApiV1AdmMemberController {
     public MemberWithUsernameDto getItem(
             @PathVariable int id
     ) {
-        Member actor = rq.getActor();
-
-        if (!actor.isAdmin())
-            throw new ServiceException("403-1", "권한이 없습니다.");
-
         Member member = memberService.findById(id).get();
 
         return new MemberWithUsernameDto(member);
