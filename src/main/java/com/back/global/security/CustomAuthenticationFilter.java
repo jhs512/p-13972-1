@@ -5,7 +5,7 @@ import com.back.domain.member.member.service.MemberService;
 import com.back.global.exception.ServiceException;
 import com.back.global.rq.Rq;
 import com.back.global.rsData.RsData;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.back.standard.util.Ut;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +30,6 @@ import java.util.Map;
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
     private final MemberService memberService;
     private final Rq rq;
-    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -43,7 +42,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             response.setContentType("application/json");
             response.setStatus(rsData.statusCode());
             response.getWriter().write(
-                    objectMapper.writeValueAsString(rsData)
+                    Ut.json.toString(rsData)
             );
         } catch (Exception e) {
             throw e;
