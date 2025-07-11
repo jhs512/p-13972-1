@@ -22,7 +22,7 @@ public class SecurityConfig {
                         auth -> auth
                                 .requestMatchers("/favicon.ico").permitAll()
                                 .requestMatchers("/h2-console/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/*/posts", "/api/*/posts/{postId:\\d+}/comments", "/api/*/posts/{postId:\\d+}/comments/{id:\\d+}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/*/posts/{id:\\d+}", "/api/*/posts", "/api/*/posts/{postId:\\d+}/comments", "/api/*/posts/{postId:\\d+}/comments/{id:\\d+}").permitAll()
                                 .requestMatchers("/api/*/members/login", "/api/*/members/logout").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/*/members").permitAll()
                                 .requestMatchers("/api/*/adm/**").hasRole("ADMIN")
